@@ -33,11 +33,11 @@ func NewIndex() *Index {
 	}
 }
 
-func (this *Index) Query(command, rettype, rkey, rfield string) (string, error) {
+func (this *Index) Query(rettype, command string, commandArgs []interface{}) (string, error) {
 	if got, err := this.withConn(func(conn redis.Conn) (interface{}, error) {
-		return conn.Do(command, rkey, rfield)
+		return conn.Do(command, commandArgs...)
 	}); err != nil {
-		log.Printf("Not Found origin data:err=%v, command=%v, rkey=%v, rfield=%v", err, command, rkey, rfield)
+		log.Printf("Not Found origin data:err=%v, command=%v, commandArgs=%v", err, command, commandArgs)
 		return "", err
 	} else {
 		var ret string
