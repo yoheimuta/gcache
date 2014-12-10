@@ -7,11 +7,18 @@ import (
 	"os"
 	"strings"
 
+	"lib/config"
+
 	"github.com/golang/groupcache"
 	"github.com/hashicorp/memberlist"
 )
 
-const groupcachePort = 8000
+func getPort() string {
+	rootConf := config.Instance().Root()
+	portConf := rootConf["port"].(map[interface{}]interface{})
+	port := portConf["groupcache"].(string)
+	return port
+}
 
 type eventDelegate struct {
 	peers []string
@@ -42,7 +49,7 @@ func (e *eventDelegate) NotifyUpdate(node *memberlist.Node) {
 }
 
 func (e *eventDelegate) groupcacheURI(addr string) string {
-	return fmt.Sprintf("http://%s:%d", addr, groupcachePort)
+	return fmt.Sprintf("http://%s:%s", addr, getPort())
 }
 
 func (e *eventDelegate) removePeer(uri string) {
@@ -68,8 +75,8 @@ func InitGroupCache() {
 	}
 
 	self := list.Members()[0]
-	addr := fmt.Sprintf("%s:%d", self.Addr, groupcachePort)
-	eventHandler.pool = groupcache.NewHTTPPool("http://" + addr)
+	addr := eventHandler.groupcacheURI(string(self.Addr))
+	eventHandler.pool = groupcache.NewHTTPPool(addr)
 	go http.ListenAndServe(addr, eventHandler.pool)
 
 	if nodes := os.Getenv("JOIN_TO"); nodes != "" {

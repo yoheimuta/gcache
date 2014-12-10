@@ -10,9 +10,10 @@ import (
 )
 
 const (
-	REDIS_BIND = "127.0.0.1"
-	REDIS_PORT = "6380"
-	REDIS_CON  = REDIS_BIND + ":" + REDIS_PORT
+	GCACHE_PORT = "30000"
+	REDIS_BIND  = "127.0.0.1"
+	REDIS_PORT  = "6380"
+	REDIS_CON   = REDIS_BIND + ":" + REDIS_PORT
 )
 
 var redisServer *tempredis.Server = nil
@@ -34,6 +35,10 @@ func Start(c *Config) {
 		c = newConfig()
 	}
 
+	if err := setupPort(); err != nil {
+		panic(err)
+	}
+
 	if err := setupRedis(); err != nil {
 		panic(err)
 	}
@@ -41,6 +46,13 @@ func Start(c *Config) {
 
 func Term() {
 	teardownRedis()
+}
+
+func setupPort() error {
+	c := config.Instance().Root()
+	p := c["port"].(map[interface{}]interface{})
+	p["gcache"] = GCACHE_PORT
+	return nil
 }
 
 func setupRedis() error {

@@ -1,4 +1,7 @@
 home: /gcache/gcache/
+port:
+    gcache: '3000'
+    groupcache: '8000'
 redis:
     ad_index_master:
         server: 'localhost:6379'

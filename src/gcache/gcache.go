@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"lib/app"
+	"lib/config"
 	"lib/eventDelegate"
 	"lib/index"
 
@@ -16,6 +17,13 @@ const (
 	groupName = "group"
 	groupSize = 64 << 20
 )
+
+func getPort() string {
+	rootConf := config.Instance().Root()
+	portConf := rootConf["port"].(map[interface{}]interface{})
+	port := portConf["gcache"].(string)
+	return port
+}
 
 func main() {
 	eventDelegate.InitGroupCache()
@@ -38,5 +46,5 @@ func main() {
 		}
 		return result
 	})
-	m.Run()
+	m.RunOnAddr(":" + getPort())
 }
