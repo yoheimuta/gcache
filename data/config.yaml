@@ -1,3 +1,4 @@
+home: /gcache/gcache/
 redis:
     ad_index_master:
         server: 'localhost:6379'

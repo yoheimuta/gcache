@@ -4,3 +4,6 @@ github.com/golang/groupcache f391194b967ae0d21deadc861ea87120d9687447
 github.com/garyburd/redigo/redis cca3df8fa0670249a3f746bcc062c69aeba0517c
 github.com/jteeuwen/go-bindata v3.0.5
 github.com/go-yaml/yaml 1b9791953ba4027efaeb728c7355e542a203be5e
+github.com/smartystreets/goconvey 627707e8db4a4e52f4e1fbbb4e10d98e79a3c946
+github.com/jacobsa/oglematchers 4fc24f97b5b74022c2a3f4ca7eed57ca29083d3e
+github.com/stvp/tempredis 61d17804873d82a3046f0698e04a4b9a187f8b69
