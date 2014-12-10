@@ -1,6 +1,6 @@
-github.com/hashicorp/memberlist
-github.com/codegangsta/martini
-github.com/golang/groupcache
-github.com/garyburd/redigo/redis
+github.com/hashicorp/memberlist 16d947e2d4b3f1fe508ee1d9b6ec34b8fd2e96d8
+github.com/codegangsta/martini 8eda3a62a2d3a84c8d0bd82c0a6e884f872b68b4
+github.com/golang/groupcache f391194b967ae0d21deadc861ea87120d9687447
+github.com/garyburd/redigo/redis cca3df8fa0670249a3f746bcc062c69aeba0517c
 github.com/jteeuwen/go-bindata v3.0.5
 github.com/go-yaml/yaml 1b9791953ba4027efaeb728c7355e542a203be5e
