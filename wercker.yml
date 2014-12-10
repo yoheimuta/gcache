@@ -1,0 +1,41 @@
+box: wercker/golang
+# Build definition
+build:
+  # The steps that will be executed on build
+  steps:
+    # Sets the go workspace and places you package
+    # at the right place in the workspace tree
+    - setup-go-workspace
+
+    # see, http://razokulover.hateblo.jp/entry/2014/05/21/000306
+    - script:
+        name: install redis
+        code: |
+            # get latest one (http://infra.logdown.com/posts/175723-latest-ubuntu-1204-redis-server-apt-get)
+            sudo apt-get install python-software-properties # add-apt-repositoryを使えるようにする
+            sudo add-apt-repository -y ppa:chris-lea/redis-server #リポジトリの追加と更新
+            sudo apt-get update
+            sudo apt-cache showpkg redis-server # インストール可能バージョンの確認
+            sudo apt-get install -y redis-server
+            sudo redis-server -v
+            sudo redis-cli shutdown
+
+    # Gets the dependencies
+    - script:
+        name: go get
+        code: |
+          cd $WERCKER_SOURCE_DIR
+          go version
+          wget -qO- https://raw.githubusercontent.com/pote/gpm/v1.2.3/bin/gpm | bash
+
+    # Test the project
+    # see #1
+    - script:
+        name: go test
+        code: |
+          GOPATH="$PWD:$GOPATH" sh src/test/gotest.sh -v
+  after-steps:
+    # Slack integration
+    # see http://qiita.com/nekogeruge_987/items/f2c9bc1e258128d49373
+    - wantedly/pretty-slack-notify:
+        webhook_url: https://hooks.slack.com/services/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
