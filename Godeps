@@ -2,3 +2,5 @@ github.com/hashicorp/memberlist
 github.com/codegangsta/martini
 github.com/golang/groupcache
 github.com/garyburd/redigo/redis
+github.com/jteeuwen/go-bindata v3.0.5
+github.com/go-yaml/yaml 1b9791953ba4027efaeb728c7355e542a203be5e

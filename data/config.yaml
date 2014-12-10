@@ -1,0 +1,4 @@
+redis:
+    ad_index_master:
+        server: 'localhost:6379'
+        reconnect: 10

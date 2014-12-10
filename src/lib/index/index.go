@@ -7,6 +7,8 @@ import (
 	"sync"
 	"time"
 
+	"lib/config"
+
 	"github.com/garyburd/redigo/redis"
 )
 
@@ -15,9 +17,18 @@ type Index struct {
 	conn redis.Conn
 }
 
+func getConfig() (timeout time.Duration, server string) {
+	rootConf := config.Instance().Root()
+	redisConf := rootConf["redis"].(map[interface{}]interface{})
+	adIndexConf := redisConf["ad_index_master"].(map[interface{}]interface{})
+
+	timeout = time.Duration(adIndexConf["reconnect"].(int)) * time.Second
+	server = adIndexConf["server"].(string)
+	return timeout, server
+}
+
 func NewIndex() *Index {
-	timeout := 10 * time.Second
-	server := "localhost:6379"
+	timeout, server := getConfig()
 
 	if conn, err := redis.DialTimeout(
 		"tcp",
