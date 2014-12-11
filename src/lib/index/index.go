@@ -20,7 +20,7 @@ type Index struct {
 func getConfig() (timeout time.Duration, server string) {
 	rootConf := config.Instance().Root()
 	redisConf := rootConf["redis"].(map[interface{}]interface{})
-	adIndexConf := redisConf["ad_index_master"].(map[interface{}]interface{})
+	adIndexConf := redisConf["master"].(map[interface{}]interface{})
 
 	timeout = time.Duration(adIndexConf["reconnect"].(int)) * time.Second
 	server = adIndexConf["server"].(string)

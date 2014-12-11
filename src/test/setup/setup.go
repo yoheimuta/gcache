@@ -69,7 +69,7 @@ func setupRedis() error {
 	} else {
 		c := config.Instance().Root()
 		c = c["redis"].(map[interface{}]interface{})
-		ac := c["ad_index_master"].(map[interface{}]interface{})
+		ac := c["master"].(map[interface{}]interface{})
 
 		ac["server"] = REDIS_CON
 

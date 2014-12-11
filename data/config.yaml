@@ -3,6 +3,6 @@ port:
     gcache: '3000'
     groupcache: '8000'
 redis:
-    ad_index_master:
+    master:
         server: 'localhost:6379'
         reconnect: 10
