@@ -13,10 +13,17 @@ import (
 	"github.com/hashicorp/memberlist"
 )
 
-func getPort() string {
+func getGPort() int {
 	rootConf := config.Instance().Root()
 	portConf := rootConf["port"].(map[interface{}]interface{})
-	port := portConf["groupcache"].(string)
+	port := portConf["groupcache"].(int)
+	return port
+}
+
+func getMPort() int {
+	rootConf := config.Instance().Root()
+	portConf := rootConf["port"].(map[interface{}]interface{})
+	port := portConf["memberlist"].(int)
 	return port
 }
 
@@ -49,7 +56,7 @@ func (e *eventDelegate) NotifyUpdate(node *memberlist.Node) {
 }
 
 func (e *eventDelegate) groupcacheURI(addr string) string {
-	return fmt.Sprintf("http://%s:%s", addr, getPort())
+	return fmt.Sprintf("http://%s:%d", addr, getGPort())
 }
 
 func (e *eventDelegate) removePeer(uri string) {
@@ -65,6 +72,7 @@ func InitGroupCache() {
 	eventHandler := &eventDelegate{}
 	conf := memberlist.DefaultLANConfig()
 	conf.Events = eventHandler
+	conf.BindPort = getMPort()
 	if addr := os.Getenv("GROUPCACHE_ADDR"); addr != "" {
 		conf.AdvertiseAddr = addr
 	}

@@ -1,7 +1,8 @@
 home: /gcache/gcache/
 port:
     gcache: '3000'
-    groupcache: '8000'
+    groupcache: 8000
+    memberlist: 7946
 redis:
     master:
         server: 'localhost:6379'
