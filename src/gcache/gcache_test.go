@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"testing"
+	"time"
 
 	"lib/index"
 	"test/setup"
@@ -23,6 +24,9 @@ func TestMain(t *testing.T) {
 	port := getPort()
 
 	go main()
+
+	// Wait for listening
+	time.Sleep(10 * time.Millisecond)
 
 	Convey("When command request is arrived", t, func() {
 
