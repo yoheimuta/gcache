@@ -10,10 +10,12 @@ import (
 )
 
 const (
-	GCACHE_PORT = "30000"
-	REDIS_BIND  = "127.0.0.1"
-	REDIS_PORT  = "6380"
-	REDIS_CON   = REDIS_BIND + ":" + REDIS_PORT
+	GCACHE_PORT     = "30000"
+	GROUPCACHE_PORT = 40000
+	MEMBERLIST_PORT = 50000
+	REDIS_BIND      = "127.0.0.1"
+	REDIS_PORT      = "6380"
+	REDIS_CON       = REDIS_BIND + ":" + REDIS_PORT
 )
 
 var redisServer *tempredis.Server = nil
@@ -52,6 +54,8 @@ func setupPort() error {
 	c := config.Instance().Root()
 	p := c["port"].(map[interface{}]interface{})
 	p["gcache"] = GCACHE_PORT
+	p["groupcache"] = GROUPCACHE_PORT
+	p["memberlist"] = MEMBERLIST_PORT
 	return nil
 }
 

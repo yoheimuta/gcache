@@ -39,6 +39,16 @@ func TestApp(t *testing.T) {
 
 			So(err, ShouldBeNil)
 			So(ret, ShouldEqual, "test")
+
+			Convey("data in redis is deleted, but the data in groupcache still exist", func() {
+				teardown(idx)
+
+				var ret2 string
+				err2 := gcache.Get(idx, command, groupcache.StringSink(&ret2))
+
+				So(err2, ShouldBeNil)
+				So(ret2, ShouldEqual, "test")
+			})
 		})
 	})
 
@@ -60,6 +70,12 @@ func TestApp(t *testing.T) {
 
 func fixture(idx *index.Index) {
 	if _, err := idx.Query("int", "hset", []interface{}{"ADINFO", "1", "test"}); err != nil {
+		panic(err)
+	}
+}
+
+func teardown(idx *index.Index) {
+	if _, err := idx.Query("int", "del", []interface{}{"ADINFO"}); err != nil {
 		panic(err)
 	}
 }

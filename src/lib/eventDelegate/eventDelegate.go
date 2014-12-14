@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
-	"strings"
 
 	"lib/config"
 
@@ -13,27 +11,19 @@ import (
 	"github.com/hashicorp/memberlist"
 )
 
-func getGPort() int {
-	rootConf := config.Instance().Root()
-	portConf := rootConf["port"].(map[interface{}]interface{})
-	port := portConf["groupcache"].(int)
-	return port
-}
-
-func getMPort() int {
-	rootConf := config.Instance().Root()
-	portConf := rootConf["port"].(map[interface{}]interface{})
-	port := portConf["memberlist"].(int)
-	return port
-}
-
-type eventDelegate struct {
+type Delegate struct {
 	peers []string
 	pool  *groupcache.HTTPPool
 }
 
-func (e *eventDelegate) NotifyJoin(node *memberlist.Node) {
-	uri := e.groupcacheURI(node.Addr.String())
+func (e *Delegate) InitGroupCachePool(node *memberlist.Node) {
+	uri := groupcacheURI(node.Addr.String())
+	e.pool = groupcache.NewHTTPPool(uri)
+	go http.ListenAndServe(uri, e.pool)
+}
+
+func (e *Delegate) NotifyJoin(node *memberlist.Node) {
+	uri := groupcacheURI(node.Addr.String())
 	e.removePeer(uri)
 	e.peers = append(e.peers, uri)
 	if e.pool != nil {
@@ -43,23 +33,21 @@ func (e *eventDelegate) NotifyJoin(node *memberlist.Node) {
 	log.Printf("Current peers: %v", e.peers)
 }
 
-func (e *eventDelegate) NotifyLeave(node *memberlist.Node) {
-	uri := e.groupcacheURI(node.Addr.String())
+func (e *Delegate) NotifyLeave(node *memberlist.Node) {
+	uri := groupcacheURI(node.Addr.String())
 	e.removePeer(uri)
-	e.pool.Set(e.peers...)
+	if e.pool != nil {
+		e.pool.Set(e.peers...)
+	}
 	log.Print("Remove peer: " + uri)
 	log.Printf("Current peers: %v", e.peers)
 }
 
-func (e *eventDelegate) NotifyUpdate(node *memberlist.Node) {
+func (e *Delegate) NotifyUpdate(node *memberlist.Node) {
 	log.Print("Update the node: %+v\n", node)
 }
 
-func (e *eventDelegate) groupcacheURI(addr string) string {
-	return fmt.Sprintf("http://%s:%d", addr, getGPort())
-}
-
-func (e *eventDelegate) removePeer(uri string) {
+func (e *Delegate) removePeer(uri string) {
 	for i := 0; i < len(e.peers); i++ {
 		if e.peers[i] == uri {
 			e.peers = append(e.peers[:i], e.peers[i+1:]...)
@@ -68,28 +56,9 @@ func (e *eventDelegate) removePeer(uri string) {
 	}
 }
 
-func InitGroupCache() {
-	eventHandler := &eventDelegate{}
-	conf := memberlist.DefaultLANConfig()
-	conf.Events = eventHandler
-	conf.BindPort = getMPort()
-	if addr := os.Getenv("GROUPCACHE_ADDR"); addr != "" {
-		conf.AdvertiseAddr = addr
-	}
-
-	list, err := memberlist.Create(conf)
-	if err != nil {
-		panic("Failed to created memberlist: " + err.Error())
-	}
-
-	self := list.Members()[0]
-	addr := eventHandler.groupcacheURI(string(self.Addr))
-	eventHandler.pool = groupcache.NewHTTPPool(addr)
-	go http.ListenAndServe(addr, eventHandler.pool)
-
-	if nodes := os.Getenv("JOIN_TO"); nodes != "" {
-		if _, err := list.Join(strings.Split(nodes, ",")); err != nil {
-			panic("Failed to join cluster: " + err.Error())
-		}
-	}
+func groupcacheURI(addr string) string {
+	rootConf := config.Instance().Root()
+	portConf := rootConf["port"].(map[interface{}]interface{})
+	port := portConf["groupcache"].(int)
+	return fmt.Sprintf("http://%s:%d", addr, port)
 }

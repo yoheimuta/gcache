@@ -6,7 +6,7 @@ import (
 
 	"lib/app"
 	"lib/config"
-	"lib/eventDelegate"
+	"lib/gserver"
 	"lib/index"
 
 	"github.com/codegangsta/martini"
@@ -26,7 +26,7 @@ func getPort() string {
 }
 
 func main() {
-	eventDelegate.InitGroupCache()
+	gserver.Start()
 	gcache := groupcache.NewGroup(groupName, groupSize, groupcache.GetterFunc(app.Handle))
 
 	idx := index.NewIndex()

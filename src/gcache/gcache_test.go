@@ -53,7 +53,7 @@ func TestMain(t *testing.T) {
 			So(err2, ShouldBeNil)
 			So(string(byteArray), ShouldEqual, "test")
 
-			Convey("redis has no data, but the data still exist", func() {
+			Convey("data in redis is deleted, but the data in groupcache still exist", func() {
 				teardown(idx)
 
 				resp, err := http.Get("http://localhost:" + port + "/" + command)
