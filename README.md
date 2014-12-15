@@ -1,6 +1,6 @@
 # gcache
 
-[![wercker status](https://app.wercker.com/status/5b8af1fb600ac896b7de2194aabaca6b/m "wercker status")](https://app.wercker.com/project/bykey/5b8af1fb600ac896b7de2194aabaca6b)
+[![wercker status](https://app.wercker.com/status/1460654b98fc628d3697061b61281fea/m "wercker status")](https://app.wercker.com/project/bykey/1460654b98fc628d3697061b61281fea)
 
 `gcache` is a http server that manages [groupcache](https://github.com/golang/groupcache) for the `Redis database`.
 
