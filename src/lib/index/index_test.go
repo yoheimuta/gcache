@@ -20,7 +20,7 @@ func TestIndex(t *testing.T) {
 	idx := NewIndex()
 
 	Convey("When hset command is sended", t, func() {
-		ret, err := idx.Query("int", "hset", []interface{}{"ADINFO", "1", "test"})
+		ret, err := idx.Query("int", "hset", []interface{}{"INFO", "1", "test"})
 
 		Convey("the command is valid", func() {
 			So(err, ShouldBeNil)
@@ -28,7 +28,7 @@ func TestIndex(t *testing.T) {
 		})
 
 		Convey("When hget command is sended", func() {
-			ret, err := idx.Query("str", "hget", []interface{}{"ADINFO", "1"})
+			ret, err := idx.Query("str", "hget", []interface{}{"INFO", "1"})
 
 			Convey("the command is valid", func() {
 				So(err, ShouldBeNil)

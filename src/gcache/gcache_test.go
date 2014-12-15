@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	command = "1417475105-4-str-HGET-ADINFO-1"
+	command = "1417475105-4-str-HGET-INFO-1"
 )
 
 func TestMain(t *testing.T) {
@@ -89,13 +89,13 @@ func TestMain(t *testing.T) {
 }
 
 func fixture(idx *index.Index) {
-	if _, err := idx.Query("int", "hset", []interface{}{"ADINFO", "1", "test"}); err != nil {
+	if _, err := idx.Query("int", "hset", []interface{}{"INFO", "1", "test"}); err != nil {
 		panic(err)
 	}
 }
 
 func teardown(idx *index.Index) {
-	if _, err := idx.Query("int", "del", []interface{}{"ADINFO"}); err != nil {
+	if _, err := idx.Query("int", "del", []interface{}{"INFO"}); err != nil {
 		panic(err)
 	}
 }

@@ -31,7 +31,7 @@ func Handle(ctx groupcache.Context, key string, dst groupcache.Sink) error {
 
 func parseKeyString(key string) (rettype, command string, commandArgs []interface{}, err error) {
 	// key is [mtime]-[argc]-[rettype]-[command]-[key]-[field]
-	// ex. 1417475105-4-str-HGET-ADINFO-1
+	// ex. 1417475105-4-str-HGET-INFO-1
 	keys := strings.SplitN(key, "-", 3)
 	if len(keys) != 3 {
 		return "", "", nil, fmt.Errorf("given key is invalid :keys=%v", keys)
