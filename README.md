@@ -4,7 +4,7 @@
 
 `gcache` is a http server that manages [groupcache](https://github.com/golang/groupcache) for the `Redis database`.
 
-It enables your project built by `except golang` to introduce groupcache via http protocol. When each many process caches in many instances(like application servers) loads indivisualy data from the Redis database, the problems are the `Redis database loads like CPU usage %`  and `wasteful memory(which is the same data) for many processes in many instance`.
+It enables your project built by `except golang` to introduce groupcache via http protocol. When each many process caches in many instances(like application servers) loads indivisualy data from the Redis database, the problems are the `Redis database loads like CPU usage %`  and `wasteful memory(which is the same data) for many processes in many instances`.
 
 (Refering to and modifying a part of groupcache README) Whereas process caches just says "Sorry, cache miss"(ex. because of origin data updated), often resulting in a `thundering herd of Redis database (or whatever) loads` from an unbounded number of clients (which has resulted in several fun outages), groupcache coordinates cache fills such that only one load in one process of an entire replicated set of processes populates the cache, then multiplexes the loaded value to all callers.
 
@@ -24,7 +24,7 @@ Join an existing cluster by specifying at least one known member.
 $ GROUPCACHE_ADDR=172.20.20.12 JOIN_TO=172.20.20.11 gcache
 ```
 
-Ask for data. Request URL pathname has a protocol to define `[optional prefix]-[arguments number]-[return type]-[command]-[command arguments]`
+Ask for data. Request URL pathname has a protocol to be defined `[optional prefix]-[arguments number]-[return type]-[command]-[command arguments]`
 
 ```sh
 curl "http://172.20.20.11:3000/1417475105-4-str-HGET-INFO-1"
@@ -57,7 +57,14 @@ $ make test DEBUG=1
 
 Install gcache according to above instruction, `before` setting up vagrant environment.
 
-Then, create vagrant hosts named n1(node to run redis-server), n2(node to run gcache), and n3(node to run gcache joining to n2).
+Then change redis-server hostname in a config.yaml.
+
+```sh
+$ sed -i '' -e"s/localhost/172.20.20.10/" data/config.yaml
+$ make asset
+```
+
+Create vagrant hosts named n1(node to run redis-server), n2(node to run gcache), and n3(node to run gcache joining to n2).
 
 ```sh
 $ vagrant up
